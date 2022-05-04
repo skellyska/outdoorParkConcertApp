@@ -36,14 +36,80 @@ Your software saves data seating and purchase data into a .json  file as transac
 #load seat data for each row as arrays that store a seat's value as empty or taken
 
 
+import userInterface
+
+"""
+    This is the main code.  This is the .py file that you run to execute and
+    run/start the application.
+    Students do NOT need to change this code.
+"""
+
+userInterface.start()
+
+def start():
+	"""
+		logs the user in, and runs the app
+	"""
+
+	userName = userLogin.login()
+
+	runApp(userName)
+
+
+def runApp(userName):
+	userName.input("/nEnter Name: ")
+
+	# loop until user types q
+	userQuit = False
+	while (not userQuit):
+        print("-- Welcome to Skelly's Concert --")
+    userInput = input("Enter a command:") # get first character of input
+    lowerInput = userInput.lower()
+    firstChar = lowerInput[0:1]
+        print("Type t to run tests or q to quit")
+        print()
+
+		# get first character of input
+
+
+		# menu choices, use a switch-like if-elif control structure
+
+		"""
+			here students need to change and add to this code to
+			handle their menu options
+		"""
+		# quit
+		if firstChar == 'q':
+			userQuit = True
+
+		# run some tests (this is part 1 of 2)
+		elif firstChar == 't':
+			runTests()
+
+		else:
+			print("ERROR: " + firstChar + " is not a valid command")
+
+	print("\n")
+	print("Thank you for using the Gladys West Map App!")
+	print("\n")
+
+
+
 def storeusers(form):
     # gives data to all session variables
     session['name'] = form.name.data
     session['lastname'] = form.lastname.data
-    session['emailaddress'] = form.emailaddress.data
-    session['password'] = form.password.data
 
-
+    # creates a new folder for a user to store their information in based on their email address
+    path = "/Users/mod/Documents/GitHub/outdoorParkConcertApp" + session.get('name', 'lastname')
+    os.mkdir(path)
+    filename = path + "/info.txt"
+    # stores user's info in a txt file inside their folder
+    with open(filename,"w+") as f:
+        f.write(session.get('name'))
+        f.write(" ")
+        f.write(session.get('lastname'))
+        f.close()
 
 
 
