@@ -4,7 +4,7 @@ The matrix is populated with a since all seats are available
 """
 
 # our test matrix has 4 rows and 10 columns
-n_row = 19
+n_row = 20
 n_col = 26
 
 # available seat
