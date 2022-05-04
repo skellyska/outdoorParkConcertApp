@@ -4,8 +4,8 @@ The matrix is populated with a since all seats are available
 """
 
 # our test matrix has 4 rows and 10 columns
-n_row = 4
-n_col = 10
+n_row = 19
+n_col = 26
 
 # available seat
 available_seat = 'a'
@@ -18,7 +18,7 @@ for r in range(n_row):
         row.append(available_seat)
     seating.append(row)
 
-# print available seating
+# print available seating row
 for r in range(n_row):
     print(r+1, end="\t")
     for c in range(n_col):
