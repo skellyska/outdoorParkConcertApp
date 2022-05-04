@@ -1,6 +1,9 @@
 """
 This example code creates a 2d list (2d matrix) that can store seating.
 The matrix is populated with a since all seats are available
+
+resources:
+https://github.com/mylescruz/Tiny-Concert/blob/master/Tiny_Concert/env/app.py
 """
 
 # our test matrix has 4 rows and 10 columns
