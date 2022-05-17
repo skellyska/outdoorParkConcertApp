@@ -35,101 +35,107 @@ Your software saves data seating and purchase data into a .json  file as transac
 #display seats and availability
 #load seat data for each row as arrays that store a seat's value as empty or taken
 
+def searchByName(name):
+    """
+    Func: searchByName
+    Desc: a function to search by name
+    """
 
-import userInterface
+    results = ""
 
-"""
-    This is the main code.  This is the .py file that you run to execute and
-    run/start the application.
-    Students do NOT need to change this code.
-"""
+    print("name = " + name)
 
-userInterface.start()
+    return results
 
-def start():
-	"""
-		logs the user in, and runs the app
-	"""
+def quit():
+    """
+    Func: quit
+    Desc: Gracefully quits
+    """
 
-	userName = userLogin.login()
+    print("Thank you for using the application")
 
-	runApp(userName)
+def menu():
+    """
+    Func: menu
+    Desc: Display the menu
+    """
 
+    # present the menu
+    print("---- Menu ----")
+    print("[v]iew/display available seating")
+    print("[b]uy/purchase a ticket")
+    print("[s]earch by name")
+    print("[d]isplay all purchases")
+    print()
+    print("[q]uit")
+    print("-----------------")
+    print()
 
-def runApp(userName):
-	userName.input("/nEnter Name: ")
+def handleUserInput(userInput):
+    """
+    Func: handleUserInput
+    Desc: handles user input and dispatches calls
+    """
 
-	# loop until user types q
-	userQuit = False
-	while (not userQuit):
-        print("-- Welcome to Skelly's Concert --")
-    userInput = input("Enter a command:") # get first character of input
-    lowerInput = userInput.lower()
-    firstChar = lowerInput[0:1]
-        print("Type t to run tests or q to quit")
-        print()
+    if (userInput == "v"):
+        seatingView()
 
-		# get first character of input
+    elif (userInput == "s"):
+        name = input("Enter a name to search for:")
+        searchByName(name)
 
+    elif (userInput == "l"):
+        print("library")
 
-		# menu choices, use a switch-like if-elif control structure
+    elif (userInput == "q"):
+        quit()
 
-		"""
-			here students need to change and add to this code to
-			handle their menu options
-		"""
-		# quit
-		if firstChar == 'q':
-			userQuit = True
+    # "default" case, if none of the other cases were satisfied
+    else:
+        print("No such command." + str(userInput))
 
-		# run some tests (this is part 1 of 2)
-		elif firstChar == 't':
-			runTests()
+def seatingView():
 
-		else:
-			print("ERROR: " + firstChar + " is not a valid command")
+    n_row = 20
+    n_col = 26
 
-	print("\n")
-	print("Thank you for using the Gladys West Map App!")
-	print("\n")
+    # available seat
+    available_seat = 'a'
 
-
-
-def storeusers(form):
-    # gives data to all session variables
-    session['name'] = form.name.data
-    session['lastname'] = form.lastname.data
-
-    # creates a new folder for a user to store their information in based on their email address
-    path = "/Users/mod/Documents/GitHub/outdoorParkConcertApp" + session.get('name', 'lastname')
-    os.mkdir(path)
-    filename = path + "/info.txt"
-    # stores user's info in a txt file inside their folder
-    with open(filename,"w+") as f:
-        f.write(session.get('name'))
-        f.write(" ")
-        f.write(session.get('lastname'))
-        f.close()
-
-
-
-n_row = 20
-n_col = 26
-
-# available seat
-available_seat = 'a'
-
-# create some available seating
-seating = []
-for r in range(n_row):
-    row = []
-    for c in range(n_col):
-        row.append(available_seat)
-    seating.append(row)
+    # create some available seating
+    seating = []
+    for r in range(n_row):
+        row = []
+        for c in range(n_col):
+            row.append(available_seat)
+        seating.append(row)
 
 # print available seating row
-for r in range(n_row):
-    print(r+1, end="\t")
-    for c in range(n_col):
-        print(seating[r][c], end=" ")
-    print()
+    for r in range(n_row):  
+        print(r+1, end="\t")
+        for c in range(n_col):
+            print(seating[r][c], end=" ")
+        print()
+
+def main():
+    """
+    Func: main
+    Desc: main routine
+    """
+
+    userInput = ""
+    while (userInput != "q"):
+
+        menu()
+
+        # get user input
+        userInput = input("Enter a command, or q to quit:")
+
+        # handle user input
+        handleUserInput(userInput)
+        
+        # print/display result
+        print("userInput = " + userInput)
+
+main()
