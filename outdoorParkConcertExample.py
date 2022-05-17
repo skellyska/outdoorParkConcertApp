@@ -85,7 +85,7 @@ def handleUserInput(userInput):
         name = input("Enter a name to search for:")
         searchByName(name)
 
-    elif (userInput == "l"):
+    elif (userInput == "d"):
         print("library")
 
     elif (userInput == "q"):
@@ -125,7 +125,8 @@ def main():
     """
 
     userInput = ""
-    while (userInput != "q"):
+    userQuit = False
+    while (not userQuit):
 
         menu()
 
