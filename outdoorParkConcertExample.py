@@ -35,6 +35,29 @@ Your software saves data seating and purchase data into a .json  file as transac
 #display seats and availability
 #load seat data for each row as arrays that store a seat's value as empty or taken
 
+import os
+
+def main():
+    """
+    Func: main
+    Desc: main routine
+    """
+
+    userInput = ""
+    userQuit = False
+    while (not userQuit):
+
+        menu()
+
+        # get user input
+        userInput = input("Enter a command, or q to quit:")
+
+        # handle user input
+        handleUserInput(userInput)
+        
+        # print/display result
+        print("userInput = " + userInput)
+
 def searchByName(name):
     """
     Func: searchByName
@@ -118,25 +141,20 @@ def seatingView():
             print(seating[r][c], end=" ")
         print()
 
-def main():
-    """
-    Func: main
-    Desc: main routine
-    """
+def storeusers(form):
+    session = []
+    # gives data to all session variables
+    session['name'] = form.name.data
+    session['lastname'] = form.lastname.data
 
-    userInput = ""
-    userQuit = False
-    while (not userQuit):
-
-        menu()
-
-        # get user input
-        userInput = input("Enter a command, or q to quit:")
-
-        # handle user input
-        handleUserInput(userInput)
-        
-        # print/display result
-        print("userInput = " + userInput)
-
+    # creates a new folder for a user to store their information in based on their email address
+    path = "/Users/mod/Documents/Github/outdoorParkConcertApp" + session.get('name', 'lastname')
+    os.mkdir(path)
+    filename = path + "/info.txt"
+    # stores user's info in a txt file inside their folder
+    with open(filename, "w+") as f:
+        f.write(session.get('name'))
+        f.write(" ")
+        f.write(session.get('lastname'))
+        f.close()
 main()
