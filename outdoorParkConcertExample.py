@@ -4,6 +4,7 @@ The matrix is populated with a since all seats are available
 
 resources:
 https://github.com/mylescruz/Tiny-Concert/blob/master/Tiny_Concert/env/app.py
+https://codereview.stackexchange.com/questions/198040/user-login-database-intended-for-beginners
 
 Menu system for guests to:
 [V]iew/display available seating
