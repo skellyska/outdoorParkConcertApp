@@ -150,6 +150,7 @@ def ticketPurchase():
     while restart != ("n", "NO", "no", "N"):
         print("1. Check Ticket Prices")
         print("2. Ticket Reservation")
+        print("3. Register new user")
         option = int(input("\nEnter your option: "))
         if option == 1:
             print("Front Seat with price $80.  Rows 0 - 4")
@@ -170,13 +171,40 @@ def ticketPurchase():
                     restart = ("Y")
                 else:
                     x = 0
-        print("\n Total Ticket: ",people)
-        for p in range(1,people+1):
-            print("Ticket:", p)
-            print("Name: ",name_l)
-            print("Age: ",age_l)
-            x += 1
-
+            print("\n Total Ticket: ",people)
+            for p in range(1,people+1):
+                print("Ticket:", p)
+                print("Name: ",name_l)
+                print("Age: ",age_l)
+                x += 1
+        elif option == 3:
+            def new_user_menu():
+                menu = "\n".join([
+                    'Select an option by entering its number and pressing Enter.',
+                    '1. Create a user account',
+                    '2. Log in to existing account',
+                ])
+                print(menu)
+                valid_selections = [1,2]
+                input_is_valid = False
+                selection = None
+                while not input_is_valid:
+                    try:
+                        selection = int(input('Selection: '))
+                        if selection in valid_selections:
+                            input_is_valid = True
+                        else:
+                            print('The number you have entered is not a valid selection')
+                    except ValueError:
+                        print('The value you entered is not a number.')
+                handle_main_menu_selection(selection)
+            def handle_main_menu_selection(selection: int):
+                if selection ==1:
+                    create_new_user_menu()
+                elif selection ==2:
+                    user_login_menu()
+                else:
+                    raise ValueError(f'Selection {selection} is invalid.')
 
 def storeusers(form):
     session = []
