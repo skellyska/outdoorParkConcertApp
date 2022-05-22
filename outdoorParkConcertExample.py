@@ -9,13 +9,11 @@ Menu system for guests to:
 [V]iew/display available seating
 An available seat is indicated with a "a" (lower case a)
 An already occupied seat is indicated with a "X" (capital x)
-There must be 2 social distancing seats (available seats) between each occupied seat on a row. 
-> 1 row distance between each row.  Bulk tickets that are purchased can sit next to each other.
 Provide 3 types of seating
 Front Seat with price $80.  Rows 0 - 4
 Middle Seat with price $50.  Rows 5-10
 Back Seat with price $25.  Rows 11-19
-[B]uy/purchase a ticket and provide receipt with  state tax of 7.25% including an additional mandatory mask fee of $5.00
+[B]uy/purchase a ticket and provide receipt with  state tax of 7.25%
 When a purchase is made, ask the user for their name & email address
 [S]earch by name will display the tickets purchased by a user with a specific name.
 [D]isplay all purchases.  Prints all the purchases made and shows the total amount of income/money that the venue has made.
@@ -34,6 +32,7 @@ Your software saves data seating and purchase data into a .json  file as transac
 #login and creating json
 #display seats and availability
 #load seat data for each row as arrays that store a seat's value as empty or taken
+
 
 import os
 
@@ -103,7 +102,8 @@ def handleUserInput(userInput):
 
     if (userInput == "v"):
         seatingView()
-
+    elif (userInput == "b"):
+        ticketPurchase()
     elif (userInput == "s"):
         name = input("Enter a name to search for:")
         searchByName(name)
@@ -117,6 +117,7 @@ def handleUserInput(userInput):
     # "default" case, if none of the other cases were satisfied
     else:
         print("No such command." + str(userInput))
+        
 
 def seatingView():
 
@@ -141,6 +142,41 @@ def seatingView():
             print(seating[r][c], end=" ")
         print()
 
+def ticketPurchase():
+    print("\n\nTicket Booking System\n")
+    restart = ("Y")
+
+    while restart != ("n", "NO", "no", "N"):
+        print("1. Check Ticket Prices")
+        print("2. Ticket Reservation")
+        option = int(input("\nEnter your option: "))
+        if option == 1:
+            print("Front Seat with price $80.  Rows 0 - 4")
+            print("Middle Seat with price $50.  Rows 5-10")
+            print("Back Seat with price $25.  Rows 11-19")
+            ticketPurchase()
+        elif option == 2:
+            people = int(input("\nEnter number of tickets you would like to purchase: "))
+            name_l = []
+            age_l = []
+            for p in range(people):
+                name = str(input("\nName :"))
+                name_l.append(name)
+                age = int(input("\nAge: "))
+                age_l.append(age)
+                restart = str(input("\nWould you like to purchase anymore tickets? y/n:"))
+                if restart in ("y", "YES", "yes", "Y"):
+                    restart = ("Y")
+                else:
+                    x = 0
+        print("\n Total Ticket: ",people)
+        for p in range(1,people+1):
+            print("Ticket:", p)
+            print("Name: ",name_l)
+            print("Age: ",age_l)
+            x += 1
+
+
 def storeusers(form):
     session = []
     # gives data to all session variables
@@ -158,3 +194,5 @@ def storeusers(form):
         f.write(session.get('lastname'))
         f.close()
 main()
+
+
