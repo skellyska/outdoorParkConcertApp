@@ -5,6 +5,7 @@ The matrix is populated with a since all seats are available
 resources:
 https://github.com/mylescruz/Tiny-Concert/blob/master/Tiny_Concert/env/app.py
 https://codereview.stackexchange.com/questions/198040/user-login-database-intended-for-beginners
+https://stackoverflow.com/questions/41082140/seating-plan-in-python
 
 Menu system for guests to:
 [V]iew/display available seating
@@ -36,9 +37,14 @@ Your software saves data seating and purchase data into a .json  file as transac
 
 
 from distutils.log import error
-import os
 import getpass
 import re
+import datetime
+from sqlite3 import Row
+from typing import Dict
+import json
+from typing import Union, List
+from pathlib import Path
 
 
 def main():
@@ -92,13 +98,14 @@ def menu():
     """
 
     # present the menu
+    print(" ")
     print("---- Menu ----")
-    print("[v]iew/display available seating")
-    print("[b]uy/purchase a ticket")
-    print("[s]earch by name")
-    print("[d]isplay all purchases")
+    print("1. View/display available seating")
+    print("2. Log in to account or create account")
+    print("3. Search ticket holders by name")
+    print("4. Display all purchases")
     print()
-    print("[q]uit")
+    print("5. Quit")
     print("-----------------")
     print()
 
@@ -109,47 +116,140 @@ def handleUserInput(userInput):
     Desc: handles user input and dispatches calls
     """
 
-    if (userInput == "v"):
+    if (userInput == "1"):
         seatingView()
-    elif (userInput == "b"):
+    elif (userInput == "2"):
         ticketPurchase()
-    elif (userInput == "s"):
+    elif (userInput == "3"):
         name = input("Enter a name to search for:")
         searchByName(name)
-
-    elif (userInput == "d"):
+    elif (userInput == "4"):
         print("library")
-
-    elif (userInput == "q"):
+    elif (userInput == "5"):
         quit()
 
     # "default" case, if none of the other cases were satisfied
     else:
         print("No such command." + str(userInput))
 
-
 def seatingView():
-
-    n_row = 20
-    n_col = 26
-
-    # available seat
-    available_seat = 'a'
-
-    # create some available seating
-    seating = []
-    for r in range(n_row):
-        row = []
-        for c in range(n_col):
-            row.append(available_seat)
-        seating.append(row)
-
-# print available seating row
-    for r in range(n_row):
-        print(r+1, end="\t")
-        for c in range(n_col):
-            print(seating[r][c], end=" ")
-        print()
+    def save(sales, taken_seats):
+        f = open("data.txt", "w")
+        f.write(str(sales) + "\n")
+        for x in taken_seats:
+            f.write(x + "\n")
+        f.close()
+    def load():
+        f = open("data.txt")
+        sales = f.readline().replace("\n", "")
+        taken_seats = []
+        d = True
+        while d == True:
+            line = f.readline().replace("\n", "")
+            if line == "":
+                d = False
+            else:
+               taken_seats.append(line)
+        if sales == "":
+            sales = 0
+        else:
+            sales = int(sales)
+        f.close()
+        return (int(sales), taken_seats)
+    def display_seats(taken_seats):
+        seating = []
+        xd = 0
+        for xd in range(15):
+            row = []
+            xda = 0
+            for xda in range(15):
+                row.append('a')
+                xda = xda + 1
+            xd = xd + 1
+            seating.append(row)
+        for x in taken_seats:
+            pos = x.split(",")
+            seating[(int(pos[0]) - 1)][(int(pos[0]))] = "X"
+        dx = 1
+        for row in seating:
+            if len(str(dx)) == 1:
+                de = " " + str(dx) + "   "
+            elif len(str(dx)) == 2:
+                de = " " + str(dx) + "  "
+            else:
+                de = dx
+            print ("Row: " + str(de) + " ".join(row))
+            dx = dx + 1
+    def list_options():
+        print(" ")
+        print ("1: View current seating")
+        print ("2: View price per row")
+        print ("3: View sales")
+        print ("4: Buy ticket")
+        print (" ")
+        print("5. Quit")
+        new_input = input("Your choice: ")
+        return (new_input)
+    def purchase_seat(taken_seats):
+        print ("Would you like to view current seating availability? ")
+        print ("'1' = yes, '2' = no")
+        newinput = input("? ")
+        if newinput == "1":
+           display_seats(taken_seats)
+        x = True
+        while x == True:
+            cost = 0
+            print ("what row would you like to buy a seat on? ")
+            rowx = input("What row? ")
+            print ("What seat would you like to purchase?")
+            rowy = input("what seat? ")
+            d = (str(rowx) + "," + str(rowy))
+            h = 0
+            for x in taken_seats:
+                if d == x:
+                    h = 1
+            if h == 1:
+               print ("That seat is already taken, please choose another seat.")
+            elif int(rowx) > 15 or int(rowy) > 15:
+                print ("Invalid seating location, please choose another seat.")
+            else:
+                print ("seat purchased.")
+                cost = (200 - (10 * int(rowx)))
+                x = False
+        return (cost, (str(rowx) + "," + str(rowy)))
+    da = load()
+    sales = da[0]
+    taken_seats = da[1]
+    quitter = 0
+    while quitter == 0:
+        new_input = list_options()
+        if new_input == "5":
+            save(sales, taken_seats)
+            quitter = 1
+        elif new_input == "4":
+            g = True
+            while g == True:
+                new_seat = purchase_seat(taken_seats)
+                taken_seats.append(new_seat[1])
+                print ("That will be: $ " + str(new_seat[0]))
+                sales = sales + new_seat[0]
+                print ("Would you like to purchase another seat?")
+                new_input = input("'1' = yes, '2' = no: ")
+                if new_input == "1":
+                    pass
+                else:
+                    g = False
+        elif new_input == "3":
+            print ("Total sales: $" + str(sales))
+        elif new_input == "2":
+            xd = 0
+            while xd < 15:
+                print ("Row " + str(xd + 1) + ": is $" + str((200 - (10 * xd)) - 10))
+                xd = xd + 1
+        elif new_input == "1":
+            display_seats(taken_seats)
+        else:
+            print("Invalid option.")
 
 
 def ticketPurchase():
@@ -157,9 +257,9 @@ def ticketPurchase():
     restart = ("Y")
 
     while restart != ("n", "NO", "no", "N"):
-        print("1. Check Ticket Prices")
-        print("2. Ticket Reservation")
-        print("3. Register new user")
+        print("1. Ticket Prices")
+        print("2. Buy a ticket")
+        print("3. Register new user or Login")
         option = int(input("\nEnter your option: "))
         if option == 1:
             print("Front Seat with price $80.  Rows 0 - 4")
@@ -189,6 +289,53 @@ def ticketPurchase():
                 print("Age: ", age_l)
                 x += 1
         elif option == 3:
+            DEFAULT_FILE_PATH = '/Users/carleelyons/Desktop/Eric Coding Bullshit/Github repos/outdoorParkConcertApp/users/users.json'
+
+            def create_file_if_not_exists(file_path: str) -> None:
+                Path(file_path).touch()
+            def get_json_file_contents(file_path: str) -> Union[List, None]:
+                try:
+                    json_file = open(file_path)
+                except IOError:
+                    return None
+                try:
+                    file_contents = json.load(json_file)
+                except ValueError:
+                    file_contents = None
+                json_file.close()
+                return file_contents
+
+
+            def prepare_new_user_data(username: str, password: str) -> Dict:
+                new_user = {
+                    'username': username,
+                    'password': password,
+                    'created': str(datetime.datetime.now()),
+                    'active': True
+                }
+            def check_if_user_already_exists(username: str, json_file_path: str=DEFAULT_FILE_PATH) -> bool:
+                all_users = get_json_file_contents(json_file_path)
+                if not all_users:
+                    return False
+                for user in all_users:
+                    if user['username'] == username:
+                        return True
+                return False
+            def retrieve_user(username: str, json_filepath: str=DEFAULT_FILE_PATH) -> Union[Dict, None]:
+                all_users = get_json_file_contents(json_filepath)
+                for user in all_users:
+                    if user['username'] == username:
+                        return user
+                return None
+            def authenticate_username_and_password(username: str, password: str) -> bool:
+                user = retrieve_user(username)
+                check_password = user['password']
+                if not user:
+                    return False
+                if not check_password(password):
+                    return False
+                return True
+            
             def user_menu():
                 menu = "\n".join([
                     'Select an option by entering its number and pressing Enter.',
@@ -237,12 +384,8 @@ def ticketPurchase():
                 
                     username = get_username_input()
                     password = get_password_input()
-                    user_added_successfully = try_adding_user(
-                            username, password)
-                    if not user_added_successfully:
-                            print(f'Username "{username}" already exists.')
-                    else:
-                        raise ValueError(str(error))
+                    user_added_successfully = try_adding_user(username, password)
+            
             def try_adding_user(username: str, password: str) -> bool:
                 """
                 Attempts to add a user to the user database file.
@@ -255,6 +398,7 @@ def ticketPurchase():
                     return True
                 except ValueError:
                     return False
+
             def user_login_menu() -> None:
                 menu = '\n'.join([
                    '---',
@@ -270,6 +414,7 @@ def ticketPurchase():
                     if not login_successful:
                         print('Incorrect username or password.')
                     print('Login successful.')
+
             def get_username_input() -> str:
                 """
                 Request username input from the user.
@@ -284,6 +429,7 @@ def ticketPurchase():
                 if not pattern.match(username):
                     raise ValueError('Username must consist of only letters, numbers, and underscores.')
                 return username
+
             def get_password_input() -> str:
                 """
                 Request password input from the user.
@@ -294,27 +440,36 @@ def ticketPurchase():
                 if len(password) < minimum_length:
                     raise ValueError('Password must be at least 8 characters.')
                 return password
+            def prepare_new_user_data(username: str, password: str) -> Dict:
+                new_user = {
+                    'username': username,
+                    'password': password,
+                    'created': str(datetime.datetime.now()),
+                    'active': True
+                }
+                return new_user
+            def check_if_user_already_exists(username: str, json_file_path: str=DEFAULT_FILE_PATH) -> bool:
+                all_users = get_json_file_contents(json_file_path)
+                if not all_users:
+                    return False
+                for user in all_users:
+                    if user['username'] == username:
+                        return True
+            def add_user(username: str, password: str, json_file_path: str=DEFAULT_FILE_PATH) -> None:
+                create_file_if_not_exists(json_file_path)
+                is_duplicate_user = check_if_user_already_exists(username, json_file_path)
+                if is_duplicate_user:
+                    raise ValueError(f'Username "{username}" already exists.')
+                new_user = prepare_new_user_data(username, password)
+                all_users = get_json_file_contents(json_file_path)
+                if not all_users:
+                    all_users = []
+                all_users.append(new_user)
+                with open(json_file_path, 'w') as users_file:
+                    json.dump(all_users, users_file, indent=2)
+            
+
         user_menu()
-
-
-
-def storeusers(form):
-    session = []
-    # gives data to all session variables
-    session['name'] = form.name.data
-    session['lastname'] = form.lastname.data
-
-    # creates a new folder for a user to store their information in based on their email address
-    path = "/Users/mod/Documents/Github/outdoorParkConcertApp" + \
-        session.get('name', 'lastname')
-    os.mkdir(path)
-    filename = path + "/info.txt"
-    # stores user's info in a txt file inside their folder
-    with open(filename, "w+") as f:
-        f.write(session.get('name'))
-        f.write(" ")
-        f.write(session.get('lastname'))
-        f.close()
 
 
 main()
